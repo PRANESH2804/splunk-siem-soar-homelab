@@ -1,0 +1,24 @@
+{
+  "incident_id": "INC-20260910125511-88704B",
+  "timestamp": "2026-09-10T12:55:11.833044",
+  "alert_name": "Suspicious Outbound Connection",
+  "status": "CONTAINED",
+  "target_user": "root",
+  "source_ip": "198.51.100.45",
+  "enrichment": {
+    "ip": "198.51.100.45",
+    "is_private": true,
+    "reputation": "MALICIOUS",
+    "threat_score": 95,
+    "threat_category": "Command and Control (C2)",
+    "threat_actor": "APT-Simulated-Lab",
+    "confidence": "HIGH",
+    "lookup_source": "Homelab-ThreatIntel-Feed"
+  },
+  "actions_taken": [
+    "Added 198.51.100.45 to Active Threat Blocklist (/var/log/soar_blocklist.txt)",
+    "Executed safe containment firewall rule (non-destructive)",
+    "Emitted SOAR containment log back into Splunk SIEM pipeline"
+  ],
+  "raw_evidence": "Suspicious outbound connection detected to 198.51.100.45:4444"
+}

@@ -1,0 +1,125 @@
+<dashboard version="1.1" theme="dark">
+  <label>SOC Security Operations Center - Overview</label>
+  <description>End-to-End Security Monitoring Dashboard for Kali SIEM Lab</description>
+  <row>
+    <panel>
+      <single>
+        <title>Total Security Events</title>
+        <search>
+          <query>index=security_lab | stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0x006d9c"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Failed Login Attempts</title>
+        <search>
+          <query>index=security_lab ("Failed login" OR "failed password") | stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[1,3]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Suspicious Activity</title>
+        <search>
+          <query>index=security_lab (message="*powershell*" OR message="*outbound connection*") | stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Malware Detections</title>
+        <search>
+          <query>index=security_lab (app=antivirus OR message="*malware*" OR message="*Trojan*") | stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Privileged Activity</title>
+        <search>
+          <query>index=security_lab (app=audit OR message="*sudo*") | stats count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="rangeColors">["0x53a051","0xf8be34"]</option>
+        <option name="rangeValues">[0]</option>
+        <option name="useColors">1</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Severity Distribution</title>
+        <search>
+          <query>index=security_lab | fillnull value="INFORMATIONAL" severity | top severity</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Events Over Time by Source Component</title>
+        <search>
+          <query>index=security_lab | fillnull value="system" app | timechart count by app</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">column</option>
+        <option name="charting.chart.stackMode">stacked</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Top Source IPs Observed</title>
+        <search>
+          <query>index=security_lab | rex field=message "from (?&lt;src_ip&gt;\d+\.\d+\.\d+\.\d+)" | where isnotnull(src_ip) | stats count, values(message) as sample_event by src_ip | sort - count</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <title>Latest Security Events Log</title>
+        <search>
+          <query>index=security_lab sourcetype="custom:security:lab" | table _time, host, app, severity, message | sort - _time</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>

@@ -1,0 +1,15 @@
+# Secrets and Credentials
+*.secret
+*.conf.local
+passwd
+.splunk_env
+*.key
+*.pem
+*.token
+
+# System logs and temp files
+*.log
+!sample_*.log
+__pycache__/
+*.py[cod]
+.DS_Store
