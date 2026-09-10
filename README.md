@@ -189,8 +189,3 @@ splunk-siem-soar-homelab/
 
 ---
 
-## 📄 Resume & Interview Points
-
-- **Resume Bullet**: *Deployed Splunk Enterprise 10.4 on bare-metal Kali Linux; engineered 6 custom SPL detections and correlation rules for brute-force attacks, living-off-the-land execution, and outbound C2 beacons.*
-- **Resume Bullet**: *Built a Python-based SOAR automation pipeline integrating threat intelligence enrichment, automated case ticketing, and safe containment with a closed-loop audit trail back into the SIEM.*
-- **Interview Highlight**: *Explain how the multi-stage correlation rule reduces alert fatigue by linking preceding authentication failures with secondary post-exploitation artifacts before elevating priority.*
