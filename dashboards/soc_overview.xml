@@ -1,6 +1,6 @@
 <dashboard version="1.1" theme="dark" refresh="5">
   <label>🛡️ ENTERPRISE CYBER DEFENSE CENTER - SOC OVERVIEW</label>
-  <description>Live Multi-Source Telemetry Ingestion • MITRE ATT&amp;CK Correlation • Automated SOAR Response (Auto-refreshes every 5s • Click any metric to drill down)</description>
+  <description>Live Multi-Source Telemetry Ingestion • MITRE ATT&amp;CK Correlation • Automated SOAR Response (Auto-refreshes every 5s)</description>
 
   <!-- Banner: Executive SOC Status Bar -->
   <row>
@@ -22,7 +22,7 @@
     </panel>
   </row>
 
-  <!-- Row 1: Executive KPI Metrics (Single Values with Drilldown) -->
+  <!-- Row 1: Executive KPI Metrics (Non-Redirecting Static Cards) -->
   <row>
     <panel>
       <single>
@@ -35,13 +35,11 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
         <option name="rangeColors">["0x1f4e79","0x1f4e79"]</option>
         <option name="rangeValues">[0]</option>
         <option name="underLabel">Events Ingested</option>
         <option name="useColors">1</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
       </single>
     </panel>
     <panel>
@@ -55,13 +53,11 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
         <option name="rangeColors">["0x2d6a4f","0xd90429"]</option>
         <option name="rangeValues">[0]</option>
         <option name="underLabel">Active Alarms</option>
         <option name="useColors">1</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20(severity%3D%22ALERT%22%20OR%20severity%3D%22CRITICAL%22)&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
       </single>
     </panel>
     <panel>
@@ -75,13 +71,11 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
         <option name="rangeColors">["0x2d6a4f","0xf4a261","0xd90429"]</option>
         <option name="rangeValues">[1,5]</option>
         <option name="underLabel">Trojans, SQLi, FIM Tampering</option>
         <option name="useColors">1</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20(app%3D%22antivirus%22%20OR%20app%3D%22nginx:access%22%20OR%20app%3D%22fim%22%20OR%20message%3D%22*UNION%20SELECT*%22%20OR%20message%3D%22*Trojan*%22)&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
       </single>
     </panel>
     <panel>
@@ -95,13 +89,11 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
         <option name="rangeColors">["0x1b4332","0x2d6a4f"]</option>
         <option name="rangeValues">[0]</option>
         <option name="underLabel">Playbook Auto-Responses</option>
         <option name="useColors">1</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20app%3D%22soar%22&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
       </single>
     </panel>
   </row>
@@ -131,10 +123,8 @@
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.drilldown">none</option>
         <option name="charting.legend.placement">right</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
       </chart>
     </panel>
     <panel>
@@ -151,10 +141,8 @@
         </search>
         <option name="charting.chart">column</option>
         <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.drilldown">none</option>
         <option name="charting.legend.placement">top</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-1h&amp;latest=now</link>
-        </drilldown>
       </chart>
     </panel>
   </row>
@@ -183,10 +171,8 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="charting.chart">bar</option>
+        <option name="charting.drilldown">none</option>
         <option name="charting.legend.placement">none</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
       </chart>
     </panel>
   </row>
@@ -195,7 +181,7 @@
   <row>
     <panel>
       <table>
-        <title>🚨 Live High-Severity Threat Stream (Click row to inspect asset)</title>
+        <title>🚨 Live High-Severity Threat Stream</title>
         <search>
           <query>index=security_lab (severity=ALERT OR severity=CRITICAL) 
 | eval "Event Time"=strftime(_time, "%H:%M:%S")
@@ -208,14 +194,12 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="count">8</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20host%3D%22$row.Target Asset$%22&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
+        <option name="drilldown">none</option>
       </table>
     </panel>
     <panel>
       <table>
-        <title>🛡️ Automated SOAR Containment Actions (Click row to open case ticket)</title>
+        <title>🛡️ Automated SOAR Containment Actions</title>
         <search>
           <query>index=security_lab app=soar 
 | eval "Action Time"=strftime(_time, "%H:%M:%S")
@@ -230,9 +214,7 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="count">8</option>
-        <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20app%3D%22soar%22%20%22$row.Incident ID$%22&amp;earliest=-24h&amp;latest=now</link>
-        </drilldown>
+        <option name="drilldown">none</option>
       </table>
     </panel>
   </row>
