@@ -1,12 +1,32 @@
 <dashboard version="1.1" theme="dark" refresh="5">
-  <label>Enterprise SOC Overview - Real-Time Security Operations</label>
-  <description>Live Security Telemetry Stream, Automated Threat Detections, and SOAR Playbook Responses (Auto-refreshes every 5 seconds. Click any number or row to view underlying logs)</description>
-  
-  <!-- Row 1: Executive KPI Metrics with Interactive Drilldown Links -->
+  <label>🛡️ ENTERPRISE CYBER DEFENSE CENTER - SOC OVERVIEW</label>
+  <description>Live Multi-Source Telemetry Ingestion • MITRE ATT&amp;CK Correlation • Automated SOAR Response (Auto-refreshes every 5s • Click any metric to drill down)</description>
+
+  <!-- Banner: Executive SOC Status Bar -->
+  <row>
+    <panel>
+      <html>
+        <div style="background: linear-gradient(90deg, #0d1b2a 0%, #1b263b 50%, #0d1b2a 100%); padding: 12px 20px; border-radius: 6px; border: 1px solid #415a77; display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="display: inline-block; width: 12px; height: 12px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 10px #00ff88;"></span>
+            <span style="color: #e0e1dd; font-size: 15px; font-weight: bold; letter-spacing: 0.5px;">SOC DEFENSE STATUS: OPERATIONAL</span>
+            <span style="color: #778da9; font-size: 13px;">| Real-Time Ingestion: Active</span>
+          </div>
+          <div style="color: #e0e1dd; font-size: 13px; display: flex; gap: 20px;">
+            <span><b>SIEM:</b> Splunk Enterprise 10.4</span>
+            <span><b>SOAR:</b> Python Automation Engine (10 Playbooks)</span>
+            <span><b>Telemetry:</b> Sysmon • Auditd • Web • DNS • FIM</span>
+          </div>
+        </div>
+      </html>
+    </panel>
+  </row>
+
+  <!-- Row 1: Executive KPI Metrics (Single Values with Drilldown) -->
   <row>
     <panel>
       <single>
-        <title>Total Monitored Events (Click to View Logs)</title>
+        <title>📊 Total Security Telemetry (24h)</title>
         <search>
           <query>index=security_lab | stats count</query>
           <earliest>-24h@h</earliest>
@@ -15,8 +35,9 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
-        <option name="rangeColors">["0x006d9c","0x006d9c"]</option>
+        <option name="rangeColors">["0x1f4e79","0x1f4e79"]</option>
         <option name="rangeValues">[0]</option>
+        <option name="underLabel">Events Ingested</option>
         <option name="useColors">1</option>
         <drilldown>
           <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-24h&amp;latest=now</link>
@@ -25,7 +46,7 @@
     </panel>
     <panel>
       <single>
-        <title>🚨 Threat Alerts (Click to View Alerts)</title>
+        <title>🚨 Critical &amp; High Threat Alerts</title>
         <search>
           <query>index=security_lab (severity=ALERT OR severity=CRITICAL) | stats count</query>
           <earliest>-24h@h</earliest>
@@ -34,8 +55,9 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
-        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeColors">["0x2d6a4f","0xd90429"]</option>
         <option name="rangeValues">[0]</option>
+        <option name="underLabel">Active Alarms</option>
         <option name="useColors">1</option>
         <drilldown>
           <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20(severity%3D%22ALERT%22%20OR%20severity%3D%22CRITICAL%22)&amp;earliest=-24h&amp;latest=now</link>
@@ -44,17 +66,18 @@
     </panel>
     <panel>
       <single>
-        <title>🛑 Active Malware &amp; Exploits (Click to View)</title>
+        <title>🛑 Active Malware &amp; Attack Vectors</title>
         <search>
-          <query>index=security_lab (app=antivirus OR app="nginx:access" OR app="fim" OR message="*UNION SELECT*" OR message="*Trojan*") | stats count</query>
+          <query>index=security_lab (app=antivirus OR app="nginx:access" OR app="fim" OR message="*UNION SELECT*" OR message="*Trojan*" OR message="*CobaltStrike*") | stats count</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <refresh>5s</refresh>
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
-        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeColors">["0x2d6a4f","0xf4a261","0xd90429"]</option>
         <option name="rangeValues">[1,5]</option>
+        <option name="underLabel">Trojans, SQLi, FIM Tampering</option>
         <option name="useColors">1</option>
         <drilldown>
           <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20(app%3D%22antivirus%22%20OR%20app%3D%22nginx:access%22%20OR%20app%3D%22fim%22%20OR%20message%3D%22*UNION%20SELECT*%22%20OR%20message%3D%22*Trojan*%22)&amp;earliest=-24h&amp;latest=now</link>
@@ -63,7 +86,7 @@
     </panel>
     <panel>
       <single>
-        <title>🛡️ Automated SOAR Containments (Click to View)</title>
+        <title>🛡️ Automated SOAR Mitigations</title>
         <search>
           <query>index=security_lab app=soar | stats count</query>
           <earliest>-24h@h</earliest>
@@ -72,8 +95,9 @@
           <refreshType>delay</refreshType>
         </search>
         <option name="colorMode">block</option>
-        <option name="rangeColors">["0x53a051","0x53a051"]</option>
+        <option name="rangeColors">["0x1b4332","0x2d6a4f"]</option>
         <option name="rangeValues">[0]</option>
+        <option name="underLabel">Playbook Auto-Responses</option>
         <option name="useColors">1</option>
         <drilldown>
           <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20app%3D%22soar%22&amp;earliest=-24h&amp;latest=now</link>
@@ -82,23 +106,24 @@
     </panel>
   </row>
 
-  <!-- Row 2: Visual Distribution Charts -->
+  <!-- Row 2: Visual Telemetry Breakdown & Threat Timeline -->
   <row>
     <panel>
       <chart>
-        <title>📊 Telemetry Source Breakdown</title>
+        <title>Telemetry Ingestion by Security Layer</title>
         <search>
           <query>index=security_lab 
-| eval category=case(
-    app=="auth" OR app=="wineventlog:security", "Logins &amp; Authentication",
-    app=="sysmon", "Windows Sysmon",
-    app=="nginx:access", "Web Traffic &amp; Attacks",
-    app=="firewall:iptables", "Perimeter Firewall",
-    app=="antivirus", "Antivirus &amp; Malware",
+| eval "Security Domain"=case(
+    app=="auth" OR app=="wineventlog:security", "Authentication &amp; Identity",
+    app=="sysmon", "Windows Sysmon Endpoint",
+    app=="nginx:access", "Web Application &amp; API",
+    app=="firewall:iptables", "Perimeter Network Firewall",
+    app=="antivirus", "Endpoint Antivirus &amp; EDR",
     app=="soar", "SOAR Automated Actions",
-    1=1, "System &amp; Audit"
+    app=="fim", "File Integrity Monitoring",
+    1=1, "Host Audit &amp; System"
 ) 
-| stats count by category</query>
+| stats count by "Security Domain"</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
           <refresh>5s</refresh>
@@ -106,6 +131,7 @@
         </search>
         <option name="charting.chart">pie</option>
         <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.legend.placement">right</option>
         <drilldown>
           <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-24h&amp;latest=now</link>
         </drilldown>
@@ -113,11 +139,11 @@
     </panel>
     <panel>
       <chart>
-        <title>📈 Security Activity Over Time (By Severity)</title>
+        <title>Threat Velocity &amp; Severity Spikes (Past 60 Minutes)</title>
         <search>
           <query>index=security_lab 
 | fillnull value="INFO" severity 
-| timechart span=1m count by severity</query>
+| timechart span=2m count by severity</query>
           <earliest>-1h@h</earliest>
           <latest>now</latest>
           <refresh>5s</refresh>
@@ -125,6 +151,7 @@
         </search>
         <option name="charting.chart">column</option>
         <option name="charting.chart.stackMode">stacked</option>
+        <option name="charting.legend.placement">top</option>
         <drilldown>
           <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-1h&amp;latest=now</link>
         </drilldown>
@@ -132,15 +159,48 @@
     </panel>
   </row>
 
-  <!-- Row 3: Actionable Live Event Tables with Row Drilldowns -->
+  <!-- Row 3: MITRE ATT&CK Tactic Distribution -->
+  <row>
+    <panel>
+      <chart>
+        <title>🎯 MITRE ATT&amp;CK Matrix Tactic Distribution</title>
+        <search>
+          <query>index=security_lab 
+| eval "MITRE Tactic"=case(
+    like(message, "%Failed login%") OR like(message, "%4625%"), "Credential Access (T1110)",
+    like(message, "%powershell%") OR like(message, "%EventID=1%") OR like(message, "%EXECVE%"), "Execution (T1059)",
+    like(message, "%outbound connection%") OR like(message, "%4444%") OR like(message, "%c2-%"), "Command &amp; Control (T1071)",
+    like(message, "%UNION SELECT%") OR like(message, "%etc/passwd%"), "Initial Access (T1190)",
+    like(message, "%malware%") OR like(message, "%Trojan%") OR like(message, "%CobaltStrike%"), "Execution: Malware (T1204)",
+    like(message, "%sudo%") OR like(message, "%Privileged%"), "Privilege Escalation (T1548)",
+    like(message, "%fim%") OR like(message, "%shadow%"), "Persistence / Defense Evasion (T1098)",
+    1=1, "General Security Monitoring"
+)
+| stats count by "MITRE Tactic"</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <refresh>5s</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.legend.placement">none</option>
+        <drilldown>
+          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab&amp;earliest=-24h&amp;latest=now</link>
+        </drilldown>
+      </chart>
+    </panel>
+  </row>
+
+  <!-- Row 4: Live Threat Feed & SOAR Containment Tables -->
   <row>
     <panel>
       <table>
-        <title>🚨 Live High-Severity Threat Detections (Click any row to investigate)</title>
+        <title>🚨 Live High-Severity Threat Stream (Click row to inspect asset)</title>
         <search>
           <query>index=security_lab (severity=ALERT OR severity=CRITICAL) 
-| table _time, host, app, severity, message 
-| rename _time as "Time", host as "Host", app as "Component", severity as "Severity", message as "Event Details" 
+| eval "Event Time"=strftime(_time, "%H:%M:%S")
+| table "Event Time", host, app, severity, message 
+| rename "Event Time" as "Time", host as "Target Asset", app as "Sensor", severity as "Severity", message as "Threat Summary" 
 | sort - Time</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
@@ -149,18 +209,20 @@
         </search>
         <option name="count">8</option>
         <drilldown>
-          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20host%3D%22$row.Host$%22%20(severity%3D%22ALERT%22%20OR%20severity%3D%22CRITICAL%22)&amp;earliest=-24h&amp;latest=now</link>
+          <link target="_blank">/app/search/search?q=search%20index%3Dsecurity_lab%20host%3D%22$row.Target Asset$%22&amp;earliest=-24h&amp;latest=now</link>
         </drilldown>
       </table>
     </panel>
     <panel>
       <table>
-        <title>🛡️ Automated SOAR Closed-Loop Responses (Click any row to view case)</title>
+        <title>🛡️ Automated SOAR Containment Actions (Click row to open case ticket)</title>
         <search>
           <query>index=security_lab app=soar 
-| rex field=message "Contained (?:malicious indicator (?&lt;Indicator&gt;[^\s]+) for )?incident (?&lt;Incident_ID&gt;INC-[^\s]+)" 
-| table _time, Incident_ID, Indicator, message 
-| rename _time as "Time", Incident_ID as "Incident ID", Indicator as "Target", message as "Containment Action" 
+| eval "Action Time"=strftime(_time, "%H:%M:%S")
+| rex field=message "Contained (?:malicious indicator (?&lt;Target_Indicator&gt;[^\s]+) for )?incident (?&lt;Incident_Ticket&gt;INC-[^\s]+)" 
+| fillnull value="Multi-Vector" Target_Indicator
+| table "Action Time", Incident_Ticket, Target_Indicator, message 
+| rename "Action Time" as "Time", Incident_Ticket as "Incident ID", Target_Indicator as "Isolated Target", message as "Executed Containment Action" 
 | sort - Time</query>
           <earliest>-24h@h</earliest>
           <latest>now</latest>
