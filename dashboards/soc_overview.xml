@@ -1,13 +1,18 @@
-<dashboard version="1.1" theme="dark" refresh="5">
+<form version="1.1" theme="dark" refresh="5">
   <label>🛡️ ENTERPRISE CYBER DEFENSE CENTER - SOC OVERVIEW</label>
-  <description>Live Multi-Source Telemetry Ingestion • MITRE ATT&amp;CK Correlation • In-Page Interactive Threat Investigation (Auto-refreshes every 5s • Click any card below to investigate in the table)</description>
+  <description>Live Multi-Source Telemetry Ingestion • MITRE ATT&amp;CK Matrix • In-Page Interactive Threat Workbench (Auto-refreshes every 5s • In-Page Drilldown with ZERO redirects)</description>
 
-  <!-- Default Token Initialization -->
-  <init>
-    <set token="selected_filter">(severity="ALERT" OR severity="CRITICAL")</set>
-    <set token="selected_title">🚨 Deep-Dive: Critical &amp; High-Priority Threats</set>
-    <set token="selected_desc">Displaying high-priority threat alerts, what attack was performed, targeted asset, automated actions taken, and containment status.</set>
-  </init>
+  <!-- In-Page View Selector: Switches Investigation Table on Same Page -->
+  <fieldset submitButton="false" autoRun="true">
+    <input type="radio" token="investigation_mode" searchWhenChanged="true">
+      <label>👇 SELECT INCIDENT VIEW (UPDATES ON THIS SAME PAGE — NO REDIRECTS):</label>
+      <choice value="threats">🚨 Critical &amp; High Threats</choice>
+      <choice value="malware">🛑 Active Malware &amp; Attack Vectors</choice>
+      <choice value="soar">🛡️ Automated SOAR Mitigations</choice>
+      <choice value="all">📊 Total Security Telemetry (All Events)</choice>
+      <default>threats</default>
+    </input>
+  </fieldset>
 
   <!-- Banner: Executive SOC Status Bar -->
   <row>
@@ -17,7 +22,7 @@
           <div style="display: flex; align-items: center; gap: 12px;">
             <span style="display: inline-block; width: 12px; height: 12px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 10px #00ff88;"></span>
             <span style="color: #e0e1dd; font-size: 15px; font-weight: bold; letter-spacing: 0.5px;">SOC DEFENSE STATUS: OPERATIONAL</span>
-            <span style="color: #778da9; font-size: 13px;">| Real-Time Ingestion: Active</span>
+            <span style="color: #778da9; font-size: 13px;">| Ingestion: Active (5-10 events/sec)</span>
           </div>
           <div style="color: #e0e1dd; font-size: 13px; display: flex; gap: 20px;">
             <span><b>SIEM:</b> Splunk Enterprise 10.4</span>
@@ -29,11 +34,11 @@
     </panel>
   </row>
 
-  <!-- Row 1: Executive KPI Metrics (Interactive Tokens: Updates Table In-Page Without Redirecting) -->
+  <!-- Row 1: Executive KPI Metrics (Sets Token on Click — No Redirects) -->
   <row>
     <panel>
       <single>
-        <title>📊 Total Security Telemetry (Click to View All)</title>
+        <title>📊 Total Security Telemetry (24h)</title>
         <search>
           <query>index=security_lab | stats count</query>
           <earliest>-24h@h</earliest>
@@ -44,18 +49,16 @@
         <option name="colorMode">block</option>
         <option name="rangeColors">["0x1f4e79","0x1f4e79"]</option>
         <option name="rangeValues">[0]</option>
-        <option name="underLabel">Events Ingested (Click to inspect)</option>
+        <option name="underLabel">Events Ingested (Click to view below)</option>
         <option name="useColors">1</option>
         <drilldown>
-          <set token="selected_filter">*</set>
-          <set token="selected_title">📊 Telemetry Overview: All Ingested Events Across Network</set>
-          <set token="selected_desc">Displaying full operational telemetry stream including authentications, network traffic, endpoints, and servers.</set>
+          <set token="form.investigation_mode">all</set>
         </drilldown>
       </single>
     </panel>
     <panel>
       <single>
-        <title>🚨 Critical &amp; High Threats (Click to Inspect)</title>
+        <title>🚨 Critical &amp; High Threat Alerts</title>
         <search>
           <query>index=security_lab (severity=ALERT OR severity=CRITICAL) | stats count</query>
           <earliest>-24h@h</earliest>
@@ -66,18 +69,16 @@
         <option name="colorMode">block</option>
         <option name="rangeColors">["0x2d6a4f","0xd90429"]</option>
         <option name="rangeValues">[0]</option>
-        <option name="underLabel">Active Alarms (Click to inspect)</option>
+        <option name="underLabel">Active Alarms (Click to view below)</option>
         <option name="useColors">1</option>
         <drilldown>
-          <set token="selected_filter">(severity="ALERT" OR severity="CRITICAL")</set>
-          <set token="selected_title">🚨 Deep-Dive: Critical &amp; High-Priority Threats</set>
-          <set token="selected_desc">Displaying high-priority threat alerts, what attack was performed, targeted asset, automated actions taken, and containment status.</set>
+          <set token="form.investigation_mode">threats</set>
         </drilldown>
       </single>
     </panel>
     <panel>
       <single>
-        <title>🛑 Active Malware &amp; Exploits (Click to Inspect)</title>
+        <title>🛑 Active Malware &amp; Attack Vectors</title>
         <search>
           <query>index=security_lab (app=antivirus OR app="nginx:access" OR app="fim" OR message="*UNION SELECT*" OR message="*Trojan*" OR message="*CobaltStrike*" OR message="*Locky*" OR message="*CoinMiner*") | stats count</query>
           <earliest>-24h@h</earliest>
@@ -88,18 +89,16 @@
         <option name="colorMode">block</option>
         <option name="rangeColors">["0x2d6a4f","0xf4a261","0xd90429"]</option>
         <option name="rangeValues">[1,5]</option>
-        <option name="underLabel">Trojans, SQLi, FIM (Click to inspect)</option>
+        <option name="underLabel">Trojans, SQLi, FIM (Click to view below)</option>
         <option name="useColors">1</option>
         <drilldown>
-          <set token="selected_filter">(app="antivirus" OR app="nginx:access" OR app="fim" OR message="*UNION SELECT*" OR message="*Trojan*" OR message="*CobaltStrike*" OR message="*Locky*" OR message="*CoinMiner*")</set>
-          <set token="selected_title">🛑 Attack Breakdown: Active Malware, Exploits &amp; File Tampering</set>
-          <set token="selected_desc">Displaying specific exploit attempts (SQL Injections, Trojans, Ransomware, unauthorized file modifications) and security actions taken.</set>
+          <set token="form.investigation_mode">malware</set>
         </drilldown>
       </single>
     </panel>
     <panel>
       <single>
-        <title>🛡️ Automated SOAR Mitigations (Click to Inspect)</title>
+        <title>🛡️ Automated SOAR Mitigations</title>
         <search>
           <query>index=security_lab (app=soar OR message="*SOAR*") | stats count</query>
           <earliest>-24h@h</earliest>
@@ -110,67 +109,74 @@
         <option name="colorMode">block</option>
         <option name="rangeColors">["0x1b4332","0x2d6a4f"]</option>
         <option name="rangeValues">[0]</option>
-        <option name="underLabel">Playbook Auto-Responses (Click to inspect)</option>
+        <option name="underLabel">Playbook Auto-Responses (Click to view below)</option>
         <option name="useColors">1</option>
         <drilldown>
-          <set token="selected_filter">(app="soar" OR message="*SOAR*")</set>
-          <set token="selected_title">🛡️ Automated Incident Response: Closed-Loop SOAR Playbook Mitigations</set>
-          <set token="selected_desc">Displaying incidents automatically investigated, enriched, and contained by the Python SOAR automation engine.</set>
+          <set token="form.investigation_mode">soar</set>
         </drilldown>
       </single>
     </panel>
   </row>
 
-  <!-- Row 2: In-Page Incident Investigation Panel (Updates on Card Click without Leaving Page) -->
+  <!-- Row 2: In-Page Incident Investigation Workbench (Updates In-Place with ZERO redirects) -->
   <row>
     <panel>
-      <title>$selected_title$</title>
+      <title>🔍 LIVE IN-PAGE INCIDENT INVESTIGATION WORKBENCH (Updates On Same Page)</title>
       <html>
         <div style="background: #102a43; padding: 10px 18px; border-radius: 4px; border-left: 4px solid #00b4d8; margin-bottom: 8px; font-size: 13px; color: #d9e2ec; display: flex; justify-content: space-between; align-items: center;">
-          <div><b>Active Investigation Scope:</b> $selected_desc$</div>
-          <div style="color: #627d98; font-size: 12px;"><i>Click any KPI card above to switch views instantly on this page</i></div>
+          <div><b>Active Scope:</b> Viewing details for <u>$investigation_mode$</u>. Shows what attack was done, what action was taken, and current status.</div>
+          <div style="color: #9fb3c8; font-size: 12px;"><i>Click any card above or radio button to switch in-page views</i></div>
         </div>
       </html>
       <table>
         <search>
-          <query>index=security_lab $selected_filter$ earliest=-1h
-| eval "Time"=strftime(_time, "%H:%M:%S")
-| eval "Attack / Activity Observed"=case(
-    like(message, "%DestinationPort=4444%") OR like(message, "%1337%") OR like(message, "%9001%"), "🔴 Command &amp; Control (C2) Beaconing / Reverse Shell",
-    like(message, "%UNION SELECT%"), "🔴 SQL Injection (SQLi) Database Exploit Attempt",
-    like(message, "%etc/passwd%"), "🟠 Directory Path Traversal Unauthorized File Read",
-    like(message, "%CobaltStrike%") OR like(message, "%Locky%") OR like(message, "%Trojan%") OR like(message, "%CoinMiner%"), "🔴 Malware Execution Attempt (Trojan/Ransomware)",
-    like(message, "%powershell%") OR like(message, "%vssadmin%") OR like(message, "%certutil%"), "🟠 Obfuscated Script / Living-off-the-Land Cradle",
-    like(message, "%UFW BLOCK%") OR like(message, "%ACTION=DROP%"), "🟡 Perimeter Port Scan / Unauthorized Probe",
-    like(message, "%fim%") OR like(message, "%sudoers%") OR like(message, "%shadow%"), "🔴 Critical System File Tampering (/etc/sudoers)",
-    like(message, "%phishing%") OR like(message, "%fake-hr%"), "🟠 Spearphishing Email Gateway Lure",
-    like(message, "%Failed login%"), "🟡 Brute Force Credential Guessing",
-    like(message, "%logged in successfully%"), "🟢 Authorized User Login Session",
-    like(message, "%SOAR%"), "🛡️ Automated SOAR Incident Containment",
-    1=1, "General Operational Security Telemetry"
+          <query>index=security_lab earliest=-1h
+| eval filter_match=case(
+    "$investigation_mode$"=="threats" AND (severity=="ALERT" OR severity=="CRITICAL"), 1,
+    "$investigation_mode$"=="malware" AND (app=="antivirus" OR app=="nginx:access" OR app=="fim" OR like(message, "%Trojan%") OR like(message, "%Locky%") OR like(message, "%CobaltStrike%") OR like(message, "%CoinMiner%") OR like(message, "%UNION SELECT%") OR like(message, "%etc/passwd%")), 1,
+    "$investigation_mode$"=="soar" AND (app=="soar" OR like(message, "%SOAR%")), 1,
+    "$investigation_mode$"=="all", 1,
+    1=0
 )
-| eval "Target Asset / Account"=case(
-    like(message, "%User=%"), host . " (" . replace(replace(message, ".*User=\\\"?([^\\\"\s]+).*", "\1"), "\\\", "") . ")",
-    like(message, "%user%"), host . " (" . replace(replace(message, ".*user\s+([A-Za-z0-9_-]+).*", "\1"), "\\\", "") . ")",
+| where filter_match=1
+| eval "Time"=strftime(_time, "%H:%M:%S")
+| eval "What the Attacker Did (Attack Activity)"=case(
+    like(message, "%DestinationPort=4444%") OR like(message, "%1337%") OR like(message, "%9001%"), "🔴 C2 Connection: Machine attempted communicating with external hacker server on suspicious port",
+    like(message, "%UNION SELECT%"), "🔴 SQL Injection: Attacker tried to extract usernames and password hashes from database",
+    like(message, "%etc/passwd%"), "🟠 Directory Traversal: Attacker tried to view sensitive Linux password files via website",
+    like(message, "%CobaltStrike%") OR like(message, "%Locky%") OR like(message, "%Trojan%"), "🔴 Malware Execution: Trojan/Ransomware attempted to execute payload in /tmp",
+    like(message, "%CoinMiner%"), "🟠 Crypto Miner: Unauthorized software attempted mining crypto using CPU",
+    like(message, "%powershell%") OR like(message, "%vssadmin%") OR like(message, "%certutil%"), "🟠 Malicious Command: Hidden encoded script executed to evade defenses",
+    like(message, "%UFW BLOCK%"), "🟡 Network Port Scan: External IP probed closed ports (SSH/RDP/SMB)",
+    like(message, "%sudoers%") OR like(message, "%shadow%"), "🔴 File Tampering: Unauthorized alteration to critical security files",
+    like(message, "%phishing%") OR like(message, "%fake-hr%"), "🟠 Phishing Email: Fake HR email with malicious link sent to employee",
+    like(message, "%Failed login%"), "🟡 Password Guessing: Repeated failed login attempts against user account",
+    like(message, "%logged in successfully%"), "🟢 User Login: Legitimate user authentication",
+    like(message, "%SOAR%"), "🛡️ SOAR Response: Automated playbook neutralized threat indicator",
+    1=1, "General System Activity: Normal baseline telemetry"
+)
+| eval "Target Asset &amp; User"=case(
+    like(message, "%User=%"), host . " (Account: " . replace(replace(message, ".*User=\\\"?([^\\\"\s]+).*", "\1"), "\\\", "") . ")",
+    like(message, "%user%"), host . " (Account: " . replace(replace(message, ".*user\s+([A-Za-z0-9_-]+).*", "\1"), "\\\", "") . ")",
     1=1, host
 )
-| eval "Action Taken by Defense System"=case(
-    like(message, "%action=BLOCKED%") OR like(message, "%BLOCKED%"), "🟢 QUARANTINED: Blocked by Antivirus / EDR Engine",
-    like(message, "%UFW BLOCK%") OR like(message, "%ACTION=DROP%"), "🟢 DROPPED: Firewall dropped packet at perimeter",
-    like(message, "%status=403%"), "🟢 REJECTED: Web application blocked request (HTTP 403 Forbidden)",
-    like(message, "%SOAR Playbook Auto-Response%") OR like(message, "%Action: %"), "🟢 CONTAINED: SOAR added to Blocklist / DNS Sinkhole",
-    like(message, "%File integrity change%"), "🔴 FLAGGED: FIM tampering alert generated for SOC",
-    like(message, "%logged in successfully%"), "⚪ ALLOWED: Valid authentication session established",
-    like(message, "%Failed login%"), "🟡 AUDITED: Failed login recorded; lockout threshold watched",
-    1=1, "🔵 MONITORED: Ingested &amp; Correlated by SIEM"
+| eval "What Action Was Taken to Stop It"=case(
+    like(message, "%action=BLOCKED%") OR like(message, "%BLOCKED%"), "🟢 QUARANTINED: Antivirus immediately killed the program and locked the file",
+    like(message, "%UFW BLOCK%") OR like(message, "%ACTION=DROP%"), "🟢 DROPPED: Perimeter Firewall blocked the attacker IP instantly",
+    like(message, "%status=403%"), "🟢 REJECTED: Web server blocked the malicious attack with 403 Forbidden",
+    like(message, "%SOAR Playbook Auto-Response%") OR like(message, "%Action: %"), "🟢 MITIGATED: SOAR automatically added attacker to active blocklist / sinkhole",
+    like(message, "%File integrity change%"), "🔴 FLAGGED: FIM alert generated; incident case opened for analyst",
+    like(message, "%Failed login%"), "🟡 AUDITED: Failed login recorded; account lockout timer monitored",
+    like(message, "%logged in successfully%"), "⚪ ALLOWED: Valid login accepted",
+    1=1, "🔵 MONITORED: Ingested and correlated in real-time by Splunk"
 )
-| eval "Resolution Status"=case(
-    like(message, "%BLOCKED%") OR like(message, "%DROP%") OR like(message, "%403%") OR like(message, "%SOAR%"), "✅ MITIGATED / CONTAINED",
-    like(message, "%severity=CRITICAL%") OR like(message, "%severity=ALERT%"), "⚠️ ACTIVE INVESTIGATION",
-    1=1, "ℹ️ ROUTINE ACTIVITY"
+| eval "Current Defense Status"=case(
+    like(message, "%BLOCKED%") OR like(message, "%DROP%") OR like(message, "%403%") OR like(message, "%SOAR%"), "✅ THREAT NEUTRALIZED",
+    like(message, "%CRITICAL%") OR like(message, "%ALERT%"), "⚠️ ACTIVE THREAT",
+    1=1, "ℹ️ ROUTINE"
 )
-| table "Time", "Target Asset / Account", "Attack / Activity Observed", "Action Taken by Defense System", "Resolution Status", message
-| rename message as "Raw Evidence Payload"
+| table "Time", "Target Asset &amp; User", "What the Attacker Did (Attack Activity)", "What Action Was Taken to Stop It", "Current Defense Status", message
+| rename message as "Raw Evidence / Log Line"
 | sort - Time</query>
           <earliest>-1h@h</earliest>
           <latest>now</latest>
@@ -261,4 +267,4 @@
       </chart>
     </panel>
   </row>
-</dashboard>
+</form>
